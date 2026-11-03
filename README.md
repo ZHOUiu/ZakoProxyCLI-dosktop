@@ -20,28 +20,6 @@
 
 </div>
 
----
-
-## 🐟 推荐中转 · 杂鱼 API
-
-> [!TIP]
-> ### 让好模型，更好接入。
-> **GPT · Claude · Gemini · Grok · 多款国产模型**
->
-> 从日常对话到开发调用，为你的 AI 工作流找到合适的模型服务。
-> 搭配 **ZakoAI Proxy**，统一管理上游账号、分组与客户端密钥。
->
-> ### [🚀 立即访问杂鱼 API →](https://www.zayuapi.com/)
-> **[📖 新手部署教程](https://www.mizaawa.com/index.php/archives/95/)** · **[⚡ 开始部署 ZakoAI Proxy](#quick-start)**
-
-| 🤖 丰富模型 | 🔗 服务特色 | 💎 价格定位 |
-| :--- | :--- | :--- |
-| GPT、Claude、Gemini、Grok 与多款国产模型 | 自有私有原创反代协议号池 | 主打高性价比，按需选择模型服务 |
-
-*以上沿用服务方介绍。模型供应、可用协议、价格与使用规则以杂鱼 API 官网为准。*
-
----
-
 <a id="overview"></a>
 
 ## 为什么选择 ZakoAI Proxy
