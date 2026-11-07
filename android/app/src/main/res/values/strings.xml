@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZakoAI Proxy</string>
+    <string name="notification_channel">代理服务</string>
+    <string name="notification_title">ZakoAI Proxy 正在运行</string>
+</resources>

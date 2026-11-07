@@ -1,0 +1,38 @@
+{
+  "pack": "zako-break",
+  "pack_version": "3.0.0",
+  "transport": "embedded-include_str",
+  "constraint": "models[0] 必须解析出受支持的 family；universal 条目无法内嵌，故只装 per-family",
+  "adaptations": [
+    "正文 A/执行/结构/CoT 合成单一 core，families 各自附加 overlay 后作为该 family 的 instruction",
+    "universal 与 persona 条目不内嵌（model_family() 无法解析 \"*\"），人格锁改由 DSH 侧 postPrompt 承担",
+    "deepseek family 的 instruction 由 profiles.rs 自动追加 DEEPSEEK_API_ADAPTER"
+  ],
+  "outputs": [
+    {
+      "file": "system.md",
+      "bytes": 14566,
+      "sha256": "6b4ee7e7fb7b830d83cb8947de416a32cbc65adb223f533a10912ed442b63c5d"
+    },
+    {
+      "file": "deepseek.md",
+      "bytes": 17479,
+      "sha256": "05301c3a12b7a2448649f9a2264ee7c672c517134487479be7a8c72768d77607"
+    },
+    {
+      "file": "glm.md",
+      "bytes": 16372,
+      "sha256": "eee92146c8f76f694358c39df0962cc79f68544794ca23d7e53f780d6778a3bd"
+    },
+    {
+      "file": "grok.md",
+      "bytes": 16188,
+      "sha256": "778096c60c19dfdec5d58d3983ccdbc1a3b2e4fea06234465fd15382e5f1d63f"
+    },
+    {
+      "file": "kimi.md",
+      "bytes": 16532,
+      "sha256": "ccdc403e3bcb0d163ae803703488e8cbda87184a9470c8add5235c926e2b7a7b"
+    }
+  ]
+}

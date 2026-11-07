@@ -1,0 +1,71 @@
+[
+  {
+    "id": "zakobreak-deepseek-v41-v1",
+    "name": "ZakoAI / zako-break / deepseek 全系 v1",
+    "models": [
+      "deepseek-v4.1-flash",
+      "deepseek-v4-pro",
+      "deepseek-v4-flash",
+      "deepseek-v4-flash-0731",
+      "deepseek-v4-pro-0813",
+      "deepseek-flash",
+      "deepseek-4.1-flash"
+    ],
+    "model_family": "deepseek",
+    "metadata": {
+      "source_url": "https://github.com/togg53192-cmd/jailbreaks + https://github.com/mizaawa/ZakoProxyCLI",
+      "source_revision": "jailbreaks@307400e / ZakoProxyCLI@main",
+      "variant": "open-scope+deepseek-overlay",
+      "validation": "probe-verified"
+    }
+  },
+  {
+    "id": "zakobreak-glm-53-v1",
+    "name": "ZakoAI / zako-break / glm-5.3 全系 v1",
+    "models": [
+      "glm-5.3",
+      "glm-5.3-flash",
+      "glm-5.3-air"
+    ],
+    "model_family": "glm",
+    "metadata": {
+      "source_url": "https://github.com/togg53192-cmd/jailbreaks + https://github.com/mizaawa/ZakoProxyCLI",
+      "source_revision": "jailbreaks@307400e / ZakoProxyCLI@main",
+      "variant": "open-scope+glm-overlay",
+      "validation": "probe-verified"
+    }
+  },
+  {
+    "id": "zakobreak-grok-4x-v1",
+    "name": "ZakoAI / zako-break / grok 4.x v1",
+    "models": [
+      "grok-4.7",
+      "grok-4.6",
+      "grok-build"
+    ],
+    "model_family": "grok",
+    "metadata": {
+      "source_url": "https://github.com/togg53192-cmd/jailbreaks + https://github.com/mizaawa/ZakoProxyCLI",
+      "source_revision": "jailbreaks@307400e / ZakoProxyCLI@main",
+      "variant": "open-scope+grok-overlay",
+      "validation": "probe-verified"
+    }
+  },
+  {
+    "id": "zakobreak-kimi-k2k3-v1",
+    "name": "ZakoAI / zako-break / kimi k2-k3 v1",
+    "models": [
+      "kimi-k3",
+      "kimi-k2.7",
+      "kimi-k2.7-code",
+      "kimi-k2.6"
+    ],
+    "model_family": "kimi",
+    "metadata": {
+      "source_url": "https://github.com/togg53192-cmd/jailbreaks + https://github.com/mizaawa/ZakoProxyCLI",
+      "source_revision": "jailbreaks@307400e / ZakoProxyCLI@main",
+      "variant": "open-scope+kimi-overlay",
+      "validation": "probe-verified"
+    }
+  }
+]

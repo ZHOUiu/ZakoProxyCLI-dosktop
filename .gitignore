@@ -1,11 +1,12 @@
-/target/
-/data/
-/web/node_modules/
-/web/dist/
-/test-results/
-/.local/
-/.env
-*.log
-*.db*
-*.key
-__pycache__/
+# build output
+target/
+**/build/
+.gradle/
+web/node_modules/
+web/dist/
+*.d
+*.pdb
+*.rlib
+windows/*.exe
+windows/*.dll
+android/gradle/wrapper/*.zip
