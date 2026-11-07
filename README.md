@@ -3,27 +3,30 @@
 上游：[mizaawa/ZakoProxyCLI](https://github.com/mizaawa/ZakoProxyCLI)
 本仓基线：**v0.13.3**（同步上游 0.13.3 的「聊天思考过程」改动后重新打包）
 
-## 成品
+## 成品（`release/`）
 
-本仓**只放源码**，二进制产物不进版本库（见 `.gitignore`）。按下面「从源码重建」跑完
-`scripts/pack-win.ps1` 与 `gradle assembleRelease` 即可得到：
+直接可用，无需自行构建：
 
-| 产物 | 说明 | 参考大小 |
+| 文件 | 说明 | 大小 |
 | --- | --- | --- |
 | `ZakoAI-Proxy-0.13.3-Windows-x64.exe` | Windows 单文件版，双击即用（自动展开 DLL 与控制台资源） | 4.9 MB |
 | `ZakoAI-Proxy-0.13.3-Windows-x64.zip` | Windows 目录版，解压后跑 `start.bat` | 28.4 MB |
 | `ZakoAIProxy-0.13.3-android.apk` | Android 安装包，包名 `io.zakoai.proxy`，minSdk 26 / targetSdk 35 | 27.8 MB |
-| `SHA256SUMS.txt` | 三个产物的校验值（打包脚本自动生成） | — |
+| `SHA256SUMS.txt` | 三个产物的校验值 | — |
+
+> Android 工程的 `app/src/main/jniLibs/<abi>/libzakoai.so` 也随仓库提供，
+> 因此 `gradle assembleRelease` 可直接出包；需要重新交叉编译时用 `src/.../build-android.sh`。
 
 ## 仓库结构
 
 ```
 src/ZakoProxyCLI-0.13.3/   上游 0.13.3 源码 + 本次改造（Rust / 前端）
-android/                   Android 工程（AGP 8.7.3 / Gradle 8.9 / JDK 21）
+android/                   Android 工程（AGP 8.7.3 / Gradle 8.9 / JDK 21）+ 三 ABI 的 .so
 windows/                   Windows 启动器源码 ZakoAI.Desktop.cs
 scripts/                   打包脚本 pack-win.ps1
 docs/                      两个平台的 README 与实测截图
 assets/                    图标（ico / png）
+release/                   三个成品与校验值
 ```
 
 ## 与上游的差异

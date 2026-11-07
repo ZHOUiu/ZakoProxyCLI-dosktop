@@ -10,12 +10,3 @@ web/dist/
 windows/*.exe
 windows/*.dll
 android/gradle/wrapper/*.zip
-
-# release binaries (built by scripts/pack-win.ps1, not versioned)
-release/
-android/app/src/main/jniLibs/
-*.apk
-*.zip
-*.so
-*.dll
-*.exe
