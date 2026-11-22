@@ -2,7 +2,8 @@ plugins {
     id("com.android.application")
 }
 
-val webDist: File = file("../../ZakoProxyCLI-0.13.3/web/dist")
+val webDist: File = file(System.getenv("ZAKO_WEB_DIST") ?: "../../src/web/dist")
+val jniLibsDir: File = file("src/main/jniLibs")
 
 android {
     namespace = "io.zakoai.proxy"
@@ -13,8 +14,8 @@ android {
         applicationId = "io.zakoai.proxy"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1303
-        versionName = "0.13.3"
+        versionCode = 1402
+        versionName = "0.14.2"
     }
 
     signingConfigs {
@@ -73,7 +74,12 @@ dependencies {
 
 val stageWeb = tasks.register<Copy>("stageWeb") {
     onlyIf { webDist.isDirectory }
-    from(webDist)
+    from(webDist) {
+        // Vite emits precompressed *.gz twins for the desktop server. AGP's asset merger
+        // folds "x.js" and "x.js.gz" into one resource and fails as a duplicate, and the
+        // Android host serves the plain files anyway, so they stay out of the APK.
+        exclude("**/*.gz")
+    }
     into(layout.buildDirectory.dir("staged-web/web"))
 }
 

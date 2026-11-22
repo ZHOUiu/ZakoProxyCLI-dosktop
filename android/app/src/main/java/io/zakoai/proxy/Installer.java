@@ -11,7 +11,7 @@ import java.io.OutputStream;
 
 /** Extracts the bundled web console into app-private storage, once per version. */
 final class Installer {
-    private static final String STAMP = ".web-v0.13.2-r2";
+    private static final String STAMP = ".web-v0.14.0-r1";
 
     private Installer() {}
 

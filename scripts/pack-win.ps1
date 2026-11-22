@@ -1,29 +1,28 @@
 #requires -Version 5.1
 <#
-    Packages the Windows deliverables for ZakoAI Proxy 0.13.3.
+    Packages the Windows deliverables for ZakoAI Proxy 0.14.2.
 
-      1. directory edition  -> <Release>\ZakoAI-Proxy-0.13.3-Windows-x64\   and .zip
-      2. single file        -> <Release>\ZakoAI-Proxy-0.13.3-Windows-x64.exe
-                               (launcher + appended zip payload: zakoai-proxy.exe, web\, assets\)
+      1. directory edition  -> <Release>\ZakoAI-Proxy-0.14.2-Windows-x64\   and .zip
+      2. single file        -> <Release>\ZakoAI-Proxy-0.14.2-Windows-x64.exe
+                               (launcher + appended zip payload: zakoai_proxy.dll, web\, ico)
 
     The payload is a plain deflate zip appended to the launcher image; the trailing
-    length is written into a 46-character UTF-16 slot that the launcher embeds
-    (@'s + marker + 10 digits), so no external unpacker is needed at runtime.
+    length sits in a 26-character ASCII trailer that the launcher embeds
+    ("KA/OBC__AKZ?len=" + 10 digits), so no external unpacker is needed at runtime.
 #>
 param(
-    [Parameter(Mandatory = $true)][string]$BuildDir,      # ...\src (crate root with target\release)
-    [Parameter(Mandatory = $true)][string]$WorkDir,       # ...\work
-    [Parameter(Mandatory = $true)][string]$ReleaseDir,    # ...\release
-    [string]$Version = '0.13.3'
+    [string]$BuildDir   = 'D:\zkbuild\v0142\src',      # crate root with target\release
+    [string]$WorkDir    = 'D:\zkbuild\v0142',          # android/ windows/ assets/ docs/
+    [string]$ReleaseDir = 'D:\zkbuild\v0142\release',
+    [string]$Version    = '0.14.2'
 )
 
 $ErrorActionPreference = 'Stop'
-$root = Join-Path $WorkDir 'scripts'
 $launcherSrc = Join-Path $WorkDir 'windows\ZakoAI.Desktop.cs'
-$icon = Join-Path $WorkDir 'assets\zako.ico'
-$stageDir = Join-Path $WorkDir "build\ZakoAI-Proxy-$Version-Windows-x64"
-$payloadStage = Join-Path $WorkDir 'build\payload'
-$baseName = "ZakoAI-Proxy-$Version-Windows-x64"
+$icon        = Join-Path $WorkDir 'assets\zako.ico'
+$stageDir    = Join-Path $WorkDir "build\ZakoAI-Proxy-$Version-Windows-x64"
+$payloadStage= Join-Path $WorkDir 'build\payload'
+$baseName    = "ZakoAI-Proxy-$Version-Windows-x64"
 
 function New-Directory($path) {
     if (Test-Path $path) { Remove-Item $path -Recurse -Force }
@@ -51,15 +50,17 @@ if ($LASTEXITCODE -ne 0) { throw "csc failed with $LASTEXITCODE" }
 New-Directory $stageDir
 New-Item -ItemType Directory -Force -Path $payloadStage | Out-Null
 
-$serverExe = Join-Path $BuildDir "target\release\zakoai-proxy.exe"
+$serverExe = Join-Path $BuildDir 'target\release\zakoai-proxy.exe'
+$serverDll = Join-Path $BuildDir 'target\release\zakoai_proxy.dll'
 if (-not (Test-Path $serverExe)) { throw "missing $serverExe - run cargo build --release first" }
+if (-not (Test-Path $serverDll)) { throw "missing $serverDll - run cargo build --release first" }
 $webDist = Join-Path $BuildDir 'web\dist'
 if (-not (Test-Path (Join-Path $webDist 'index.html'))) { throw "missing $webDist - run npm run build first" }
 
 Copy-Item $serverExe (Join-Path $stageDir 'zakoai-proxy.exe')
-Copy-Item (Join-Path $BuildDir 'target\release\zakoai_proxy.dll') (Join-Path $stageDir 'zakoai_proxy.dll')
-Copy-Item $exeOut (Join-Path $stageDir 'ZakoAI.Desktop.exe')
-Copy-Item $icon (Join-Path $stageDir 'zako.ico')
+Copy-Item $serverDll (Join-Path $stageDir 'zakoai_proxy.dll')
+Copy-Item $exeOut     (Join-Path $stageDir 'ZakoAI.Desktop.exe')
+Copy-Item $icon       (Join-Path $stageDir 'zako.ico')
 Copy-Item (Join-Path $BuildDir 'LICENSE') (Join-Path $stageDir 'LICENSE')
 Copy-Item (Join-Path $BuildDir 'README.md') (Join-Path $stageDir 'README.upstream.md')
 Copy-Item (Join-Path $WorkDir 'docs\README-Windows.md') (Join-Path $stageDir 'README-Windows.md')
@@ -76,16 +77,22 @@ if exist "ZakoAI.Desktop.exe" (
 )
 "@ | Set-Content (Join-Path $stageDir 'start.bat') -Encoding ascii
 
+# A local smoke test leaves runtime state behind; never ship it.
+foreach ($junk in 'data', 'logs', '.payload') {
+    $path = Join-Path $stageDir $junk
+    if (Test-Path $path) { Remove-Item $path -Recurse -Force }
+}
+
 # ---------------------------------------------------------------- 3. directory zip
 New-Item -ItemType Directory -Force -Path $ReleaseDir | Out-Null
 $zipPath = Join-Path $ReleaseDir "$baseName.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::CreateFromDirectory(
-    (Split-Path -Parent $stageDir),
+    $stageDir,
     $zipPath,
     [System.IO.Compression.CompressionLevel]::Optimal,
-    $false)
+    $true)
 "zip: {0} ({1:N1} MB)" -f $zipPath, ((Get-Item $zipPath).Length / 1MB) | Write-Host
 
 # ---------------------------------------------------------------- 4. payload zip
@@ -93,7 +100,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 # Bundling the standalone zakoai-proxy.exe trips endpoint agents (they flag the
 # relay PE and delete the whole image), so the exe stays in the directory edition.
 New-Directory $payloadStage
-Copy-Item (Join-Path $stageDir 'zakoai_proxy.dll') $payloadStage
+Copy-Item $serverDll $payloadStage
 Copy-Item $icon $payloadStage
 Copy-Item -Recurse (Join-Path $stageDir 'web') (Join-Path $payloadStage 'web')
 $payloadZip = Join-Path $WorkDir 'build\payload.zip'
@@ -104,7 +111,7 @@ if (Test-Path $payloadZip) { Remove-Item $payloadZip -Force }
 
 # ---------------------------------------------------------------- 5. build single file
 $launcherBytes = [System.IO.File]::ReadAllBytes($exeOut)
-$payloadBytes = [System.IO.File]::ReadAllBytes($payloadZip)
+$payloadBytes  = [System.IO.File]::ReadAllBytes($payloadZip)
 $trailer = [System.Text.Encoding]::ASCII.GetBytes(('KA/OBC__AKZ?len={0:D10}' -f $payloadBytes.Length))
 $single = New-Object byte[] ($launcherBytes.Length + $payloadBytes.Length + $trailer.Length)
 [Array]::Copy($launcherBytes, 0, $single, 0, $launcherBytes.Length)
@@ -128,8 +135,4 @@ if ($check[$offset] -ne 0x50 -or $check[$offset + 1] -ne 0x4B) { throw 'verifica
 if ($offset -ne $launcherBytes.Length) { throw "verification: payload offset $offset != launcher length $($launcherBytes.Length)" }
 "verified: trailer ok, payload $len bytes at offset $offset, zip magic PK, total $($check.Length) bytes" | Write-Host
 
-# ---------------------------------------------------------------- 7. checksums
-$manifest = Get-ChildItem $ReleaseDir -File | Where-Object { $_.Extension -in '.zip', '.exe', '.apk' } |
-    ForEach-Object { '{0}  {1}  {2:N0} bytes' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash, $_.Name, $_.Length }
-$manifest | Write-Host
-$manifest | Set-Content (Join-Path $ReleaseDir 'SHA256SUMS.txt') -Encoding utf8
+Write-Host 'done'

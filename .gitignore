@@ -10,3 +10,7 @@ web/dist/
 windows/*.exe
 windows/*.dll
 android/gradle/wrapper/*.zip
+
+# editor / os noise
+Thumbs.db
+desktop.ini

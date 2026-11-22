@@ -39,7 +39,7 @@ sealed class ShellForm : Form
 
     internal ShellForm()
     {
-        Text = "ZakoAI Proxy 0.13.3";
+        Text = "ZakoAI Proxy 0.14.2";
         ClientSize = new Size(940, 620);
         MinimumSize = new Size(560, 400);
         StartPosition = FormStartPosition.CenterScreen;
@@ -392,8 +392,10 @@ static class Payload
             return null; // directory edition: nothing appended
         }
         string stamp = Path.Combine(ShellForm.Home, StampName);
-        string want = "0.13.3:" + payloadLength;
-        if (File.Exists(stamp) && File.Exists(Path.Combine(ShellForm.Home, "zakoai-proxy.exe")))
+        string want = "0.14.2:" + payloadLength;
+        bool unpacked = File.Exists(Path.Combine(ShellForm.Home, "zakoai_proxy.dll"))
+            || File.Exists(Path.Combine(ShellForm.Home, "zakoai-proxy.exe"));
+        if (File.Exists(stamp) && unpacked)
         {
             try
             {

@@ -4,7 +4,7 @@ import android.os.Build;
 
 /** Build facts shown on the launcher screen. */
 final class BuildInfo {
-    static final String VERSION = "0.13.3";
+    static final String VERSION = "0.14.2";
     static final String ORIGIN = "http://127.0.0.1:1990";
 
     private BuildInfo() {}

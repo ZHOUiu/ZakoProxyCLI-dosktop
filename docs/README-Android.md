@@ -1,8 +1,8 @@
-# ZakoAI Proxy 0.13.3 · Android
+# ZakoAI Proxy 0.14.2 · Android
 
-APK：`ZakoAIProxy-0.13.3-android.apk`（本地调试签名，可直接安装）
+APK：`ZakoAIProxy-0.14.2-android.apk`（本地调试签名，可直接安装）
 
-- 包名 `io.zakoai.proxy`，版本 0.13.3（versionCode 1303），minSdk 26（Android 8.0），targetSdk 35
+- 包名 `io.zakoai.proxy`，版本 0.14.2（versionCode 1402），minSdk 26（Android 8.0），targetSdk 35
 - ABI：`arm64-v8a` / `armeabi-v7a` / `x86_64`
 - 权限：网络、前台服务、通知（后台保活）
 - 控制台资源随 APK 内置，离线可用
@@ -15,7 +15,8 @@ APK：`ZakoAIProxy-0.13.3-android.apk`（本地调试签名，可直接安装）
    - 「浏览器打开控制台」→ 交给系统浏览器；
    - 「应用内打开」→ APK 内置 WebView 直接进控制台。
 4. 控制台首次访问需创建管理员（密码 ≥ 12 位），然后按「分组 → 账号 → 密钥」配置。
-5. 前台通知常驻避免后台被冻结；「后台运行设置」可跳转电池优化白名单。
+5. 「账号」页的预设选择器支持粘贴导入（JSON / env 块 / curl 命令自动解析）。
+6. 前台通知常驻避免后台被冻结；「后台运行设置」可跳转电池优化白名单。
 
 ## 说明
 
@@ -23,16 +24,23 @@ APK：`ZakoAIProxy-0.13.3-android.apk`（本地调试签名，可直接安装）
   独立线程运行（Android 10+ 禁止 exec 应用私有目录里的可执行文件，所以不能像桌面那样跑 exe）。
 - 数据保存在 App 私有目录 `files/data`，卸载即清除。
 - 覆盖安装请使用同一签名（本包为本地调试签名）。
+- 「检查更新」指向 <https://github.com/ZHOUiu/ZakoProxyCLI-dosktop> 的 releases。
 
 ## 从源码重建
 
-```bash
-cd src/ZakoProxyCLI-0.13.3
-ANDROID_NDK_HOME=<sdk>/ndk/27.2.12479018 \
-  cargo +nightly build --release --lib -Z build-std=std,panic_abort \
-  --target aarch64-linux-android        # 同法编 armv7 / x86_64
-# 产物 target/<triple>/release/libzakoai_proxy.so → android/app/src/main/jniLibs/<abi>/libzakoai.so
+```powershell
+# 1) 三 ABI 交叉编译（Windows 主机，NDK 路径必须是纯 ASCII）
+$env:ANDROID_NDK_HOME = 'D:\zkbuild\v0140\ndkroot\android-ndk-r27c'
+$env:ANDROID_API      = '28'
+$env:JNILIBS_OUT      = 'D:\zkbuild\v0142\android\app\src\main\jniLibs'
+cd D:\zkbuild\v0142\src; powershell -File .\build-android.ps1
 
-cd ../../android
-ANDROID_HOME=<sdk> JAVA_HOME=<jdk21> ../tools/gradle-8.9/bin/gradle assembleRelease
+# 2) 打 APK
+cd D:\zkbuild\v0142\android
+$env:ANDROID_HOME     = 'D:\zkbuild\v0140\sdkroot'
+$env:ANDROID_SDK_ROOT = 'D:\zkbuild\v0140\sdkroot'
+$env:GRADLE_USER_HOME = 'D:\zkbuild\v0140\gradlehome'
+$env:ZAKO_WEB_DIST    = 'D:\zkbuild\v0142\src\web\dist'
+D:\zkbuild\v0140\gradleroot\gradle-8.9\bin\gradle.bat assembleRelease
+# 产物 app\build\outputs\apk\release\app-release.apk
 ```

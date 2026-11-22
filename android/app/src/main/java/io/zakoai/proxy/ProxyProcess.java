@@ -2,7 +2,7 @@ package io.zakoai.proxy;
 
 import java.io.File;
 
-/** Entry point into the bundled Rust relay (JNI, see src/ZakoProxyCLI-0.13.2/build-android.sh). */
+/** Entry point into the bundled Rust relay (JNI, see src/ZakoProxyCLI-0.14.0/build-android.sh). */
 final class ProxyProcess {
     static final int PORT = 1990;
     private static volatile boolean loaded;
